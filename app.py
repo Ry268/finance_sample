@@ -1,10 +1,16 @@
 from flask import Flask, request, jsonify
+from . import create_app
+from .models import db, Company
+
 import yfinance as yf
 
-app = Flask(__name__)
+app = create_app()
+print("a")
 
 @app.route('/')
 def hello():
+    companies = Company.query.all()
+    print(companies[1].company_name + " " + companies[1].stock_code)
     return 'Hello World!'
 
 @app.route('/api/stock', methods=['GET'])
