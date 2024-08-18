@@ -13,6 +13,18 @@ def hello():
     print(companies[1].company_name + " " + companies[1].stock_code)
     return 'Hello World!'
 
+@app.route('/api/search', methods=['GET'])
+def search_companies():
+    query = request.args.get('query', '')
+    if query:
+        # 日本語の企業名やコードに基づいて検索
+        results = Company.query.filter(
+            Company.company_name.ilike(f'%{query}%') | Company.stock_code.ilike(f'%{query}%')
+        ).all()
+        companies = [{"id": company.id, "name": company.company_name, "code": company.stock_code} for company in results]
+        return jsonify(companies)
+    return jsonify([])
+
 @app.route('/api/stock', methods=['GET'])
 def get_stock_data():
     company_code = request.args.get('company_code')
